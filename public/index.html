@@ -1,0 +1,68 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple Chat App</title>
+</head>
+<body>
+  <div id="loginPage">
+    <h2>Login</h2>
+    <input type="text" id="username" placeholder="Enter your username">
+    <button onclick="login()">Login</button>
+  </div>
+
+  <div id="messagePage" style="display: none;">
+    <h2>Group Chat</h2>
+    <div id="chatBox"></div>
+    <input type="text" id="message" placeholder="Type your message">
+    <button onclick="sendMessage()">Send</button>
+  </div>
+
+  <script>
+    function login() {
+      const username = document.getElementById('username').value;
+      if (username) {
+        localStorage.setItem('username', username);
+        document.getElementById('loginPage').style.display = 'none';
+        document.getElementById('messagePage').style.display = 'block';
+        displayStoredMessages();
+      } else {
+        alert('Please enter a username.');
+      }
+    }
+
+    function sendMessage() {
+      const username = localStorage.getItem('username');
+      const message = document.getElementById('message').value;
+      if (message) {
+        const chatBox = document.getElementById('chatBox');
+        chatBox.innerHTML += `<p>${username}: ${message}</p>`;
+        document.getElementById('message').value = '';
+        saveMessage(username, message);
+      } else {
+        alert('Please enter a message.');
+      }
+    }
+
+    function saveMessage(username, message) {
+      const messages = JSON.parse(localStorage.getItem('messages')) || [];
+      messages.push({ username, message });
+      localStorage.setItem('messages', JSON.stringify(messages));
+    }
+
+    function displayStoredMessages() {
+      const messages = JSON.parse(localStorage.getItem('messages')) || [];
+      const chatBox = document.getElementById('chatBox');
+      messages.forEach(msg => {
+        chatBox.innerHTML += `<p>${msg.username}: ${msg.message}</p>`;
+      });
+    }
+
+    function reloadPage() {
+      location.reload();
+    }
+  </script>
+</body>
+</html>
